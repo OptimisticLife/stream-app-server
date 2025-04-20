@@ -1,0 +1,17 @@
+[
+  {
+    "title": "movie-1",
+    "img": "http://localhost:4647/movie-1.jpeg",
+    "videoSrc": "http://localhost:4647/video-1.mp4"
+  },
+  {
+    "title": "movie-2",
+    "img": "http://localhost:4647/movie-2.jpeg",
+    "videoSrc": "http://localhost:4647/video-2.mp4"
+  },
+  {
+    "title": "movie-3",
+    "img": "http://localhost:4647/movie-3.jpeg",
+    "videoSrc": "http://localhost:4647/video-3.mp4"
+  }
+]
