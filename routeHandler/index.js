@@ -1,9 +1,10 @@
 const headerConfig = require("../utils").headerConfig;
 const movies = require("../storage/movies.json");
-const { sendImage, sendJson, sendVideo } = require("../utils");
+const { sendImage, sendJson, sendVideo, isAuthenticated } = require("../utils");
 
 const registerRoute = require("./register");
 const loginRoute = require("./login");
+const logout = require("./logout");
 
 function routeHandler(req, res) {
   const origin = req.headers.origin;
@@ -20,8 +21,32 @@ function routeHandler(req, res) {
     return;
   }
 
-  if (req.url === "/getMovies" && req.method === "GET") {
-    sendJson(res, 200, movies);
+  // CHECKING FOR AUTHENTICATION
+  if (req.url !== "/login") {
+    console.log("Checking authentication for URL:", req.url);
+    if (req.url === "/check-session" && req.method === "GET") {
+      if (!isAuthenticated(req)) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Unauthorized" }));
+        return;
+      } else {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Authorized" }));
+        return;
+      }
+    } else {
+      if (!isAuthenticated(req)) {
+        res.writeHead(401, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ message: "Unauthorized" }));
+        return;
+      }
+    }
+  }
+
+  //   ROUTE FOR LOGIN USER
+
+  if (req.url === "/login" && req.method === "POST") {
+    loginRoute(req, res);
   }
 
   //   ROUTE FOR REGISTER USER
@@ -29,9 +54,14 @@ function routeHandler(req, res) {
     registerRoute(req, res);
   }
 
-  //   ROUTE FOR LOGIN USER
-  else if (req.url === "/login" && req.method === "POST") {
-    loginRoute(req, res);
+  //   ROUTE FOR LOGOUT USER
+  else if (req.url === "/logout" && req.method === "POST") {
+    logout(req, res);
+  }
+
+  //  ROUTE FOR GETTING MOVIE LIST
+  else if (req.url === "/getMovies" && req.method === "GET") {
+    sendJson(res, 200, movies);
   }
   //   ROUTE FOR MOVIE IMAGE
   else if (req.url.includes(".jpeg") && req.method === "GET") {

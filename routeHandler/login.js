@@ -1,26 +1,45 @@
-const fs = require("fs");
 const users = require("../storage/users.json");
-const session = require("../storage/session.json");
 const { bodyParser } = require("../utils");
+const { Session } = require("./../utils");
 
 function loginRoute(req, res) {
   bodyParser(req)
     .then((data) => {
       const userData = JSON.parse(data);
+
+      // Check if the user exists
       const user = users.find(
         (user) =>
           user.email === userData.email || user.userName === userData.userName
       );
       if (user) {
+        // Check if the password is correct
+        if (user.password !== userData.password) {
+          res.writeHead(401, { "Content-Type": "application/json" });
+          res.statusMessage = "Invalid password";
+          res.end(JSON.stringify({ message: "Invalid password" }));
+          return;
+        }
+
         // New token generation
         const token = Math.random().toString(36).substring(2);
         const sessionID =
           "SESSION_ID_" + Math.random().toString(36).substring(2);
 
-        session.push({ user: user.userId, token, sessionID });
-        fs.writeFileSync("./storage/session.json", JSON.stringify(session));
+        // Check if the session already exists
+        const existingSession = Session.findSession(user.userId);
+        if (existingSession) {
+          // Update the existing session
+          Session.updateSession(user.userId, token, sessionID);
+        } else {
+          // Create a new session
+          Session.addSession(user.userId, token, sessionID);
+        }
 
-        const cookie = `token=${token}; SameSite=None; HttpOnly; Path=/;`;
+        const now = new Date();
+        now.setTime(now.getTime() + 2 * 60 * 1000); // 2 minutes in milliseconds
+
+        const cookie = `token=${token}; SameSite=None; expires=${now.toUTCString()}; Path=/; Secure`;
 
         res.writeHead(200, {
           "Content-Type": "application/json",
@@ -33,8 +52,8 @@ function loginRoute(req, res) {
         );
       } else {
         res.writeHead(401, { "Content-Type": "application/json" });
-        res.statusMessage = "Unauthorized";
-        res.end(JSON.stringify({ message: "Invalid credentials" }));
+        res.statusMessage = "No user found";
+        res.end(JSON.stringify({ message: "No user found" }));
       }
     })
     .catch((error) => {
