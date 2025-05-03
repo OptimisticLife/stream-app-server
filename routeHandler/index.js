@@ -5,6 +5,12 @@ const { sendImage, sendJson, sendVideo, isAuthenticated } = require("../utils");
 const registerRoute = require("./register");
 const loginRoute = require("./login");
 const logout = require("./logout");
+const {
+  movieChunk,
+  thumbnailChunk,
+  movieUpload,
+  movieUploadConfirmation,
+} = require("./uploadMovie");
 
 function routeHandler(req, res) {
   const origin = req.headers.origin;
@@ -63,6 +69,30 @@ function routeHandler(req, res) {
   else if (req.url === "/getMovies" && req.method === "GET") {
     sendJson(res, 200, movies);
   }
+
+  //  ROUTE FOR NEW MOVIE UPLOAD
+  else if (req.url === "/upload-movie" && req.method === "POST") {
+    movieUpload(req, res);
+  }
+
+  //  ROUTE FOR THUMBNAIL CHUNK UPLOAD
+  else if (req.url === "/upload-thumbnail-chunk" && req.method === "POST") {
+    thumbnailChunk(req, res);
+  }
+
+  //  ROUTE FOR MOVIE CHUNK UPLOAD
+  else if (req.url === "/upload-movie-chunk" && req.method === "POST") {
+    movieChunk(req, res);
+  }
+
+  //  ROUTE FOR MOVIE UPLOAD CONFIRMATION
+  else if (
+    req.url === "/movie-uploaded-confirmation" &&
+    req.method === "POST"
+  ) {
+    movieUploadConfirmation(req, res);
+  }
+
   //   ROUTE FOR MOVIE IMAGE
   else if (req.url.includes(".jpeg") && req.method === "GET") {
     const filePath = `./storage/movieImg/${req.url.split("/").pop()}`;
@@ -72,9 +102,10 @@ function routeHandler(req, res) {
   } else if (req.url.includes(".mp4") && req.method === "GET") {
     const filePath = `./storage/movievideo/${req.url.split("/").pop()}`;
     sendVideo(req, res, 200, filePath);
+  }
 
-    //  ROUTE FOR INAPPROPRIATE URL
-  } else {
+  //  ROUTE FOR INAPPROPRIATE URL
+  else {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("404 Not Found");
   }
