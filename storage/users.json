@@ -7,5 +7,14 @@
     "password": "abc",
     "confirmPassword": "abc",
     "userId": "USER_97vyxw8hrl"
+  },
+  {
+    "userName": "Athira",
+    "email": "athiravijayan@gmail.com",
+    "firstName": "Athira",
+    "lastName": "Vijayan",
+    "password": "abcd",
+    "confirmPassword": "abcd",
+    "userId": "USER_np8iqa63u4c"
   }
 ]

@@ -7,10 +7,14 @@ function loginRoute(req, res) {
     .then((data) => {
       const userData = JSON.parse(data);
 
+      console.log("User data:", userData);
       // Check if the user exists
       const user = users.find(
         (user) =>
-          user.email === userData.email || user.userName === userData.userName
+          String(user.email).toLowerCase() ===
+            String(userData.userName).toLowerCase() ||
+          String(user.userName).toLowerCase() ===
+            String(userData.userName).toLowerCase()
       );
       if (user) {
         // Check if the password is correct
@@ -37,7 +41,7 @@ function loginRoute(req, res) {
         }
 
         const now = new Date();
-        now.setTime(now.getTime() + 2 * 60 * 1000); // 2 minutes in milliseconds
+        now.setTime(now.getTime() + 30 * 60 * 1000); // 2 minutes in milliseconds
 
         const cookie = `token=${token}; SameSite=None; expires=${now.toUTCString()}; Path=/; Secure`;
 
@@ -48,7 +52,11 @@ function loginRoute(req, res) {
 
         res.statusMessage = "SUCCESS";
         res.end(
-          JSON.stringify({ message: "Login successful", "auth-token": token })
+          JSON.stringify({
+            message: "Login successful",
+            "auth-token": token,
+            userName: user.userName,
+          })
         );
       } else {
         res.writeHead(401, { "Content-Type": "application/json" });

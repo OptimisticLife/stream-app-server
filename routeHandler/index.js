@@ -22,7 +22,7 @@ function routeHandler(req, res) {
   }
 
   // CHECKING FOR AUTHENTICATION
-  if (req.url !== "/login") {
+  if (req.url !== "/login" && req.url !== "/register") {
     console.log("Checking authentication for URL:", req.url);
     if (req.url === "/check-session" && req.method === "GET") {
       if (!isAuthenticated(req)) {
