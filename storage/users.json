@@ -16,5 +16,23 @@
     "password": "abcd",
     "confirmPassword": "abcd",
     "userId": "USER_np8iqa63u4c"
+  },
+  {
+    "userName": "john",
+    "email": "johndoe@outlook.com",
+    "firstName": "john",
+    "lastName": "doe",
+    "password": "123",
+    "confirmPassword": "123",
+    "userId": "USER_8crhefarg4s"
+  },
+  {
+    "userName": "gowtham",
+    "email": "gowtham@gmail.com",
+    "firstName": "gowtham",
+    "lastName": "jaganathan",
+    "password": "12345",
+    "confirmPassword": "12345",
+    "userId": "USER_ppqn1naq917"
   }
 ]

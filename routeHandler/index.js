@@ -49,6 +49,13 @@ function routeHandler(req, res) {
     }
   }
 
+  // ROUTE FOR HOME PAGE
+  if (req.url === "/" && req.method === "GET") {
+    res.writeHead(200, headerConfig);
+    res.end("Welcome to the Movie Upload API");
+    return;
+  }
+
   //   ROUTE FOR LOGIN USER
 
   if (req.url === "/login" && req.method === "POST") {
@@ -97,9 +104,10 @@ function routeHandler(req, res) {
   else if (req.url.includes(".jpeg") && req.method === "GET") {
     const filePath = `./storage/movieImg/${req.url.split("/").pop()}`;
     sendImage(res, 200, filePath);
+  }
 
-    //   ROUTE FOR MOVIE .mp4 FILES
-  } else if (req.url.includes(".mp4") && req.method === "GET") {
+  //   ROUTE FOR MOVIE .mp4 FILES
+  else if (req.url.includes(".mp4") && req.method === "GET") {
     const filePath = `./storage/movievideo/${req.url.split("/").pop()}`;
     sendVideo(req, res, 200, filePath);
   }
