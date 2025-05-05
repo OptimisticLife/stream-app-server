@@ -140,8 +140,8 @@ async function movieUploadConfirmation(req, res) {
     // For example:
     const newMovie = {
       title: movieName,
-      img: `http://localhost:4647/${thumbnailName}.${thumbnailType}`,
-      videoSrc: `http://localhost:4647/${movieName}.${movieType}`,
+      img: `https://stream-app-server-auj8.onrender.com/${thumbnailName}.${thumbnailType}`,
+      videoSrc: `https://stream-app-server-auj8.onrender.com/${movieName}.${movieType}`,
     };
     movies.push(newMovie);
     fs.writeFileSync(

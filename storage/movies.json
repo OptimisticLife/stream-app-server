@@ -1,37 +1,37 @@
 [
   {
     "title": "movie-1",
-    "img": "http://localhost:4647/movie-1.jpeg",
-    "videoSrc": "http://localhost:4647/video-1.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/movie-1.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/video-1.mp4"
   },
   {
     "title": "movie-2",
-    "img": "http://localhost:4647/movie-2.jpeg",
-    "videoSrc": "http://localhost:4647/video-2.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/movie-2.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/video-2.mp4"
   },
   {
     "title": "movie-3",
-    "img": "http://localhost:4647/movie-3.jpeg",
-    "videoSrc": "http://localhost:4647/video-3.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/movie-3.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/video-3.mp4"
   },
   {
     "title": "Yoga_Time",
-    "img": "http://localhost:4647/Yoga_Time.jpeg",
-    "videoSrc": "http://localhost:4647/Yoga_Time.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/Yoga_Time.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/Yoga_Time.mp4"
   },
   {
     "title": "Tiger_Walk",
-    "img": "http://localhost:4647/Tiger_Walk.jpeg",
-    "videoSrc": "http://localhost:4647/Tiger_Walk.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/Tiger_Walk.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/Tiger_Walk.mp4"
   },
   {
     "title": "Relaxation_Time",
-    "img": "http://localhost:4647/Relaxation_Time.jpeg",
-    "videoSrc": "http://localhost:4647/Relaxation_Time.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/Relaxation_Time.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/Relaxation_Time.mp4"
   },
   {
     "title": "Cricket",
-    "img": "http://localhost:4647/Cricket.jpeg",
-    "videoSrc": "http://localhost:4647/Cricket.mp4"
+    "img": "https://stream-app-server-auj8.onrender.com/Cricket.jpeg",
+    "videoSrc": "https://stream-app-server-auj8.onrender.com/Cricket.mp4"
   }
 ]
