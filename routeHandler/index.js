@@ -27,6 +27,13 @@ function routeHandler(req, res) {
     return;
   }
 
+  // ROUTE FOR HOME PAGE
+  if (req.url === "/" && req.method === "GET") {
+    res.writeHead(200, headerConfig);
+    res.end("Welcome to the Movie Upload API");
+    return;
+  }
+
   // CHECKING FOR AUTHENTICATION
   if (req.url !== "/login" && req.url !== "/register") {
     console.log("Checking authentication for URL:", req.url);
@@ -47,13 +54,6 @@ function routeHandler(req, res) {
         return;
       }
     }
-  }
-
-  // ROUTE FOR HOME PAGE
-  if (req.url === "/" && req.method === "GET") {
-    res.writeHead(200, headerConfig);
-    res.end("Welcome to the Movie Upload API");
-    return;
   }
 
   //   ROUTE FOR LOGIN USER
