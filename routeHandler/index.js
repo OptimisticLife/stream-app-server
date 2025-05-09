@@ -13,9 +13,13 @@ const {
 } = require("./uploadMovie");
 
 function routeHandler(req, res) {
+  console.log("Incoming URL:", req.url);
+
   if (req.url.includes("/api")) {
     req.url = req.url.replace("/api", "");
   }
+
+  console.log("URL after /api removal URL:", req.url);
 
   const origin = req.headers.origin;
 
@@ -23,6 +27,7 @@ function routeHandler(req, res) {
     origin?.includes("localhost:5173") ||
     origin?.includes("stream-app-ui.onrender")
   ) {
+    console.log("CORS headers set for origin:", origin);
     headerConfig["Access-Control-Allow-Origin"] = origin;
     const corsHeaders = new Headers({ ...headerConfig });
     res.setHeaders(corsHeaders);
