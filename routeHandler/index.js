@@ -18,7 +18,11 @@ function routeHandler(req, res) {
   }
 
   const origin = req.headers.origin;
-  if (origin?.includes("localhost:5173")) {
+
+  if (
+    origin?.includes("localhost:5173") ||
+    origin?.includes("stream-app-server-auj8.onrender.com")
+  ) {
     headerConfig["Access-Control-Allow-Origin"] = origin;
     const corsHeaders = new Headers({ ...headerConfig });
     res.setHeaders(corsHeaders);
