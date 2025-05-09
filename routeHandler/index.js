@@ -13,6 +13,10 @@ const {
 } = require("./uploadMovie");
 
 function routeHandler(req, res) {
+  if (req.url.includes("/api")) {
+    req.url = req.url.replace("/api", "");
+  }
+
   const origin = req.headers.origin;
   if (origin?.includes("localhost:5173")) {
     headerConfig["Access-Control-Allow-Origin"] = origin;

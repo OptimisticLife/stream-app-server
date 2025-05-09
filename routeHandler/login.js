@@ -43,7 +43,7 @@ function loginRoute(req, res) {
         const now = new Date();
         now.setTime(now.getTime() + 30 * 60 * 1000); // 2 minutes in milliseconds
 
-        const tokenCookie = `token=${token}; SameSite=None; expires=${now.toUTCString()}; Path=/;`;
+        const tokenCookie = `token=${token}; SameSite=None; expires=${now.toUTCString()}; Path=/; Secure;`;
 
         res.writeHead(200, {
           "Content-Type": "application/json",
