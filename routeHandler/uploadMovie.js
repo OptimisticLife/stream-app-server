@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { bodyParser } = require("../utils");
 const movies = require("../storage/movies.json");
+require("dotenv").config();
 
 let movieName = "",
   thumbnailName = "",
@@ -138,10 +139,17 @@ async function movieUploadConfirmation(req, res) {
   } else {
     // Here you can add the logic to save the movie and thumbnail information to your database
     // For example:
+    const url =
+      process.env.NODE_ENV === "development"
+        ? `http://localhost:4647`
+        : process.env.SERVICE_URL;
+
+    console.log("URL:   --- ", url, process.env.NODE_ENV);
+
     const newMovie = {
       title: movieName,
-      img: `https://stream-app-server-auj8.onrender.com/${thumbnailName}.${thumbnailType}`,
-      videoSrc: `https://stream-app-server-auj8.onrender.com/${movieName}.${movieType}`,
+      img: `${url}/${thumbnailName}.${thumbnailType}`,
+      videoSrc: `${url}/${movieName}.${movieType}`,
     };
     movies.push(newMovie);
     fs.writeFileSync(
@@ -159,36 +167,3 @@ module.exports = {
   movieUpload,
   movieUploadConfirmation,
 };
-
-// const Busboy = require("busboy");
-
-// function busboyFormHandler(req, res) {
-//   const busboy = new Busboy({ headers: req.headers });
-//   let fileName, chunkIndex, totalChunks;
-//   let tempPath = "";
-
-//   busboy.on("field", (fieldname, value) => {
-//     if (fieldname === "fileName") fileName = value;
-//     if (fieldname === "chunkIndex") chunkIndex = value;
-//     if (fieldname === "totalChunks") totalChunks = value;
-//   });
-//   busboy.on("file", (file) => {
-//     const filePath = `./uploads/${fileName}`;
-//     tempPath = `${filePath}.part${chunkIndex}`;
-
-//     const writeStream = fs.createWriteStream(tempPath);
-//     file.pipe(writeStream);
-
-//     writeStream.on("finish", () => {
-//       console.log(`Chunk ${chunkIndex} of ${fileName} uploaded successfully.`);
-//       if (parseInt(chunkIndex) === parseInt(totalChunks)) {
-//         // All chunks uploaded, merge them
-//         mergeChunks(fileName, totalChunks);
-//       }
-//     });
-//   });
-//   busboy.on("finish", () => {
-//     res.writeHead(200, { Connection: "close" });
-//     res.end("Chunk uploaded successfully");
-//   });
-// }
