@@ -180,10 +180,10 @@ async function uploadFileToS3(req, res, isVideo = false) {
           }
         }
 
-        fs.writeFileSync(
-          "./storage/movies.json",
-          JSON.stringify(movies, null, 2)
-        );
+        // fs.writeFileSync(
+        //   "./storage/movies.json",
+        //   JSON.stringify(movies, null, 2)
+        // );
         await uploadingJsonFilestoS3("movies", movies);
 
         delete uploads[movieName];
