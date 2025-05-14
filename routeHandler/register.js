@@ -1,11 +1,15 @@
 const fs = require("fs");
-const users = require("../storage/users.json");
 const { bodyParser } = require("../utils");
+const {
+  retrieveJsonFilesFromS3,
+  uploadingJsonFilestoS3,
+} = require("../awsHandler");
 
 const registerRoute = (req, res) => {
   bodyParser(req)
-    .then((data) => {
+    .then(async (data) => {
       const userData = JSON.parse(data);
+      const users = await retrieveJsonFilesFromS3("users");
       // Check if user already exists
       const existingUser = users.find(
         (user) =>
@@ -21,8 +25,7 @@ const registerRoute = (req, res) => {
       const userId = "USER_" + Math.random().toString(36).substring(2);
       userData.userId = userId;
       users.push(userData);
-
-      fs.writeFileSync("./storage/users.json", JSON.stringify(users));
+      await uploadingJsonFilestoS3("users", users);
       res.writeHead(200, { "Content-Type": "application/json" });
       res.statusMessage = "SUCCESS";
       res.end(JSON.stringify({ message: "User registered successfully" }));

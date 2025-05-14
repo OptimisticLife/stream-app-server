@@ -1,9 +1,12 @@
-const { Session } = require("./../utils");
+const { getSessionInstance } = require("./../utils");
 
-function logout(req, res) {
+async function logout(req, res) {
   // Check if the request method is POST
+
+  const sessionInst = await getSessionInstance();
+
   const token = req.headers["cookie"].split("=")[1];
-  Session.removeSession(token);
+  await sessionInst.removeSession(token);
 
   // Clear the session cookie
   res.writeHead(200, {

@@ -1,13 +1,17 @@
-const users = require("../storage/users.json");
+const { retrieveJsonFilesFromS3 } = require("../awsHandler");
 const { bodyParser } = require("../utils");
-const { Session } = require("./../utils");
+const { getSessionInstance } = require("../utils");
 
 function loginRoute(req, res) {
   bodyParser(req)
-    .then((data) => {
+    .then(async (data) => {
       const userData = JSON.parse(data);
 
       console.log("User data:", userData);
+
+      const sessionInst = await getSessionInstance();
+      const users = await retrieveJsonFilesFromS3("users");
+
       // Check if the user exists
       const user = users.find(
         (user) =>
@@ -31,13 +35,13 @@ function loginRoute(req, res) {
           "SESSION_ID_" + Math.random().toString(36).substring(2);
 
         // Check if the session already exists
-        const existingSession = Session.findSession(user.userId);
+        const existingSession = sessionInst.findSession(user.userId);
         if (existingSession) {
           // Update the existing session
-          Session.updateSession(user.userId, token, sessionID);
+          await sessionInst.updateSession(user.userId, token, sessionID);
         } else {
           // Create a new session
-          Session.addSession(user.userId, token, sessionID);
+          await sessionInst.addSession(user.userId, token, sessionID);
         }
 
         const now = new Date();

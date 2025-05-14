@@ -1,12 +1,13 @@
-const fsAsync = require("fs/promises");
-const fs = require("fs");
-let sessions = require("./storage/session.json");
+let {
+  uploadingJsonFilestoS3,
+  retrieveJsonFilesFromS3,
+} = require("./awsHandler.js");
 
 const headerConfig = {
   "Access-Control-Allow-Origin": "http://localhost:5173",
   "Access-Control-Allow-Credentials": true,
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "range, Content-Type,",
+  "Access-Control-Allow-Headers": "range, Content-Type, x-file-id, x-is-last",
   "Access-Control-Expose-Headers": "token",
 };
 
@@ -29,78 +30,22 @@ const sendJson = (res, statusCode, data) => {
   res.end(JSON.stringify(data));
 };
 
-const sendVideo = async (req, res, statusCode, filePath) => {
-  try {
-    const stats = await fsAsync.stat(filePath);
-
-    //Handling range request...
-    const range = req.headers?.range;
-
-    let start = 0;
-    let end = stats.size - 1;
-
-    if (range) {
-      const rangeValue = range.split("=")[1];
-      const ranges = rangeValue.split("-");
-      start = Number(ranges[0]);
-      end = Number(ranges[1]) || stats.size - 1;
-
-      if (start >= stats.size || end >= stats.size) {
-        res.writeHead(416, {
-          "Content-Range": `bytes */${stats.size}`,
-        });
-        res.end();
-        return;
-      }
-    }
-
-    const readStream = fs.createReadStream(filePath, {
-      start: start,
-      end: end,
-    });
-
-    res.writeHead(206, {
-      "Content-Type": "video/mp4",
-      "Content-Length": end - start + 1,
-      "Accept-Ranges": "bytes",
-      "Content-Range": `bytes ${start}-${end}/${stats.size}`,
-    });
-
-    readStream.pipe(res);
-  } catch (err) {
-    console.log("Error in streaming video: ", err);
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("Error in streaming..");
-  }
-};
-
-const sendImage = (res, statusCode, filePath) => {
-  fs.stat(filePath, (err, stats) => {
-    if (err) {
-      res.writeHead(404, { "Content-Type": "text/plain" });
-      res.end("Image not found");
-      return;
-    }
-    res.writeHead(statusCode, {
-      "Content-Type": "image/jpeg",
-      "Content-Length": stats.size,
-    });
-    const readStream = fs.createReadStream(filePath);
-    readStream.pipe(res);
-  });
-};
-
-const isAuthenticated = (req) => {
+const isAuthenticated = async (req) => {
   if (!req.headers["cookie"]) {
     return false;
   }
+
+  const sessionInst = await getSessionInstance();
+
   const token = req.headers["cookie"].split("=")[1];
-  if (sessions.length === 0) {
+
+  if (sessionInst.sessions.length === 0) {
     return false;
   }
-  const session = sessions.find((session) => session.token === token);
-  // console.log("Session: ", session);
-  // console.log("Token: ", token);
+  const session = sessionInst.sessions.find(
+    (session) => session.token === token
+  );
+
   if (!token || !session) {
     return false;
   }
@@ -110,40 +55,64 @@ const isAuthenticated = (req) => {
 };
 
 class Session {
-  static findSession(userId) {
-    if (sessions.length === 0) {
-      return false;
-    }
-    return sessions.find((session) => session.userId === userId);
+  constructor() {
+    this.sessions = [];
   }
-  static addSession(userId, token, sessionID) {
-    sessions.push({ userId, token, sessionID });
-    this.writeSession();
+
+  async init() {
+    await this.retriveSession();
+    return this;
   }
-  static removeSession(token) {
-    sessions = sessions.filter((session) => session.token !== token);
-    this.writeSession();
+
+  findSession(userId) {
+    if (this.sessions.length === 0) return false;
+    return this.sessions.find((session) => session.userId === userId);
   }
-  static writeSession() {
-    fs.writeFileSync("./storage/session.json", JSON.stringify(sessions));
+
+  async addSession(userId, token, sessionID) {
+    this.sessions.push({ userId, token, sessionID });
+    await this.writeSession();
   }
-  static updateSession(userId, token, sessionID) {
-    sessions.forEach((session) => {
-      if (session.userId === userId) {
-        session.token = token;
-        session.sessionID = sessionID;
+
+  async removeSession(token) {
+    this.sessions = this.sessions.filter((session) => session.token !== token);
+    return await this.writeSession();
+  }
+
+  async retriveSession() {
+    this.sessions = await retrieveJsonFilesFromS3("session");
+  }
+
+  async writeSession() {
+    return await uploadingJsonFilestoS3("session", this.sessions);
+  }
+
+  async updateSession(userId, token, sessionID) {
+    this.sessions.forEach((s) => {
+      if (s.userId === userId) {
+        s.token = token;
+        s.sessionID = sessionID;
       }
     });
-    this.writeSession();
+    return await this.writeSession();
   }
+}
+
+// Singleton holder
+let instancePromise = null;
+
+function getSessionInstance() {
+  if (!instancePromise) {
+    const session = new Session();
+    instancePromise = session.init(); // This will be reused and resolved once
+  }
+  return instancePromise; // Always returns a Promise that resolves to the singleton
 }
 
 module.exports = {
   sendJson,
-  sendVideo,
-  sendImage,
   headerConfig,
   bodyParser,
   isAuthenticated,
-  Session,
+  getSessionInstance,
 };

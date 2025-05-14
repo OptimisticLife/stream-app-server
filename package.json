@@ -10,6 +10,7 @@
   "author": "Aadhik",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.808.0",
     "dotenv": "^16.5.0"
   }
 }
