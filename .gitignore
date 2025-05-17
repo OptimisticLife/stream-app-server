@@ -4,3 +4,6 @@ storage/movieVideo/*
 
 /node_modules
 
+Aadhik_accessKeys.csv
+.gitignore
+.env
