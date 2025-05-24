@@ -18,21 +18,19 @@ const routes = {
   "POST /register": registerRoute,
 
   "POST /logout": (req, res) => {
-    isAuthenticated(req, res, function () {
-      return logout(req, res);
+    return isAuthenticated(req, res, function () {
+      logout(req, res);
     });
   },
 
   "GET /check-session": (req, res) => {
-    isAuthenticated(req, res, function () {
-      return sendJson(res, 200, {
-        message: "Authorized",
-      });
+    return isAuthenticated(req, res, function () {
+      sendJson(res, 200, { message: "Authorized" });
     });
   },
 
   "GET /getMovies": (req, res) => {
-    isAuthenticated(req, res, async function () {
+    return isAuthenticated(req, res, async function () {
       const movies = await retrieveJsonFilesFromS3("movies");
       const movieMetaData = movies.map(({ id, name }) => ({ id, name }));
       sendJson(res, 200, movieMetaData);
@@ -58,11 +56,15 @@ function routeHandler(req, res) {
     origin?.includes("localhost:5173") ||
     origin?.includes("stream-app-ui.onrender")
   ) {
-    const originHeader = new Headers(headerConfig);
-    originHeader.set("Access-Control-Allow-Origin", origin);
-    res.setHeaders(originHeader);
-  }
+    // Create a copy of headerConfig as plain object
+    const headers = { ...headerConfig };
+    headers["Access-Control-Allow-Origin"] = origin;
 
+    // Set each header separately:
+    for (const [key, value] of Object.entries(headers)) {
+      res.setHeader(key, value);
+    }
+  }
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     res.writeHead(200, headerConfig);

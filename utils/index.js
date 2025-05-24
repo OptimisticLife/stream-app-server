@@ -28,12 +28,13 @@ const sendJson = (res, statusCode, data) => {
     "Content-Type": "application/json",
   });
   res.end(JSON.stringify(data));
+  return;
 };
 
 const isAuthenticated = (req, res, successCallback) => {
   const isAuth = verifyToken(req);
   if (!isAuth) {
-    res.writeHead(401, "Content-type", "application/json");
+    res.writeHead(401, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Unauthorized" }));
     return;
   }
