@@ -1,0 +1,7 @@
+
+Uploading File to S3.
+
+    - Receiving files in form of chunks.
+    - Saving chunks in variable.
+    - Once streaming ended, turn the system off.
+    - Need to think more about next project and your career.
