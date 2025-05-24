@@ -58,9 +58,9 @@ function routeHandler(req, res) {
     origin?.includes("localhost:5173") ||
     origin?.includes("stream-app-ui.onrender")
   ) {
-    res.setHeaders(
-      new Headers({ ...headerConfig, "Access-Control-Allow-Origin": origin })
-    );
+    const originHeader = new Headers(headerConfig);
+    originHeader.set("Access-Control-Allow-Origin", origin);
+    res.setHeaders(originHeader);
   }
 
   // Handle CORS preflight
