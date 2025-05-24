@@ -5,7 +5,6 @@ let {
 const { verifyToken } = require("./jwtHandler.js");
 
 const headerConfig = {
-  "Access-Control-Allow-Origin": "http://localhost:5173",
   "Access-Control-Allow-Credentials": true,
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "range, Content-Type, x-file-id, x-is-last",
