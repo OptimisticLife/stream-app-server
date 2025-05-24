@@ -1,6 +1,7 @@
-const { retrieveJsonFilesFromS3 } = require("../awsHandler");
+const { retrieveJsonFilesFromS3 } = require("../utils/awsHandler.js");
 const { bodyParser } = require("../utils");
 const { getSessionInstance } = require("../utils");
+const { createToken } = require("./../utils/jwtHandler.js");
 
 function loginRoute(req, res) {
   bodyParser(req)
@@ -29,8 +30,8 @@ function loginRoute(req, res) {
           return;
         }
 
-        // New token generation
-        const token = Math.random().toString(36).substring(2);
+        // New JWT token generation
+        const token = createToken(user);
         const sessionID =
           "SESSION_ID_" + Math.random().toString(36).substring(2);
 
@@ -42,12 +43,9 @@ function loginRoute(req, res) {
         } else {
           // Create a new session
           await sessionInst.addSession(user.userId, token, sessionID);
-        }
+        } // 2 minutes in milliseconds
 
-        const now = new Date();
-        now.setTime(now.getTime() + 30 * 60 * 1000); // 2 minutes in milliseconds
-
-        const tokenCookie = `token=${token}; SameSite=None; expires=${now.toUTCString()}; Path=/; Secure;`;
+        const tokenCookie = `token=${token}; SameSite=None; Path=/; Secure; HttpOnly`;
 
         res.writeHead(200, {
           "Content-Type": "application/json",

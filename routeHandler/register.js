@@ -3,7 +3,7 @@ const { bodyParser } = require("../utils");
 const {
   retrieveJsonFilesFromS3,
   uploadingJsonFilestoS3,
-} = require("../awsHandler");
+} = require("../utils/awsHandler");
 
 const registerRoute = (req, res) => {
   bodyParser(req)

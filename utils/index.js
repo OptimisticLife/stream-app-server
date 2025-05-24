@@ -1,7 +1,8 @@
 let {
   uploadingJsonFilestoS3,
   retrieveJsonFilesFromS3,
-} = require("./awsHandler.js");
+} = require("../utils/awsHandler.js");
+const { verifyToken } = require("./jwtHandler.js");
 
 const headerConfig = {
   "Access-Control-Allow-Origin": "http://localhost:5173",
@@ -30,28 +31,14 @@ const sendJson = (res, statusCode, data) => {
   res.end(JSON.stringify(data));
 };
 
-const isAuthenticated = async (req) => {
-  if (!req.headers["cookie"]) {
-    return false;
+const isAuthenticated = (req, res, successCallback) => {
+  const isAuth = verifyToken(req);
+  if (!isAuth) {
+    res.writeHead(401, "Content-type", "application/json");
+    res.end(JSON.stringify({ message: "Unauthorized" }));
+    return;
   }
-
-  const sessionInst = await getSessionInstance();
-
-  const token = req.headers["cookie"].split("=")[1];
-
-  if (sessionInst.sessions.length === 0) {
-    return false;
-  }
-  const session = sessionInst.sessions.find(
-    (session) => session.token === token
-  );
-
-  if (!token || !session) {
-    return false;
-  }
-  // Here you can add your logic to verify the token
-  // For example, check if the token is valid or expired
-  return true; // Assuming the token is valid for this example
+  successCallback();
 };
 
 class Session {

@@ -1,5 +1,4 @@
 require("dotenv").config(); // Load .env
-const fs = require("fs");
 
 const {
   S3Client,
