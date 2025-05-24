@@ -1,11 +1,11 @@
 // 🔐 Add these FIRST — before any require/imports
 process.on("uncaughtException", (err) => {
-  console.error("🔥 Uncaught Exception:", err);
+  console.log("🔥 Uncaught Exception:", err);
   // Optionally exit: process.exit(1);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("⚠️ Unhandled Rejection at:", promise, "reason:", reason);
+  console.log("⚠️ Unhandled Rejection at:", promise, "reason:", reason);
   // Optionally exit: process.exit(1);
 });
 

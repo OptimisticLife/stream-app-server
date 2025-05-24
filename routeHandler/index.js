@@ -52,6 +52,7 @@ function routeHandler(req, res) {
 
   // CORS setup
   const origin = req.headers.origin;
+  console.log("Req url:", req.url);
   if (
     origin?.includes("localhost:5173") ||
     origin?.includes("stream-app-ui.onrender")

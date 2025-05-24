@@ -68,12 +68,12 @@ function loginRoute(req, res) {
         }
       })
       .catch((error) => {
-        console.error("Error parsing request body:", error);
+        console.log("Error parsing request body:", error);
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Internal Server Error");
       });
   } catch (error) {
-    console.error("Error in loginRoute:", error);
+    console.log("Error in loginRoute:", error);
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");
   }
