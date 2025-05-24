@@ -1,11 +1,6 @@
-storage/movieImg/*
-
-storage/movieVideo/*
-
-/node_modules
-
-Aadhik_accessKeys.csv
-.gitignore
-./package-lock.json
+node_modules
 .env
 
+
+package-lock.json
+Aadhik_accessKeys.csv
