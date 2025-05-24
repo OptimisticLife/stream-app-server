@@ -6,5 +6,6 @@ storage/movieVideo/*
 
 Aadhik_accessKeys.csv
 .gitignore
+./package-lock.json
 .env
-.env
+
